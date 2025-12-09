@@ -1,0 +1,81 @@
+# Fichiers système
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDEs et éditeurs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.iml
+.project
+.classpath
+.settings/
+*.code-workspace
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn/
+package-lock.json
+yarn.lock
+.pnpm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+.gradle/
+
+# Logs
+logs/
+*.log
+
+# Fichiers de configuration sensibles
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+config.local.*
+
+# Build et cache
+dist/
+build/
+out/
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+
+# Fichiers temporaires
+tmp/
+temp/
+*.tmp

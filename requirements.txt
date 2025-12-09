@@ -1,0 +1,12 @@
+pandas
+numpy
+matplotlib
+seaborn
+jinja2
+streamlit
+openpyxl
+--index-url https://blpapi.bloomberg.com/repository/releases/python/simple/
+blpapi
+plotly
+
+
