@@ -78,9 +78,7 @@ class PortfolioAnalyzer:
         except Exception as e:
             logger.error(f"Erreur lors de l'analyse: {e}")
             raise
-        finally:
-            # Fermeture de la connexion Bloomberg
-            self.data_loader.close_bloomberg_connection()
+
         
     
     def _calculate_aggregated_metrics(self) -> Dict[str, any]:

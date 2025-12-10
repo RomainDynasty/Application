@@ -1,4 +1,4 @@
-from api_bloomberg import BloombergDataFetcher
+
 from logger_config import get_logger
 import pandas as pd
 
@@ -11,7 +11,7 @@ class DataLoader:
 
     def __init__(self, config: dict):
         self.config = config
-        self.bloomberg_fetcher = BloombergDataFetcher()
+
     
     def load_portfolio_data(self) -> pd.DataFrame:
         """Charge et fusionne toutes les données du portefeuille"""
@@ -26,11 +26,7 @@ class DataLoader:
         # Fusion des données
         df_merged = self._merge_all_data(df_port, df_themes, df_data, df_ratings)
         
-        # Enrichissement avec Bloomberg
-        df_enriched = self._enrich_with_bloomberg_data(df_merged)
-        
-        logger.info(f"Données chargées: {len(df_enriched)} lignes")
-        return df_enriched
+        return df_merged
     
     def _load_portfolio_file(self) -> pd.DataFrame:
         """Charge le fichier principal du portefeuille"""
@@ -132,37 +128,7 @@ class DataLoader:
         logger.info("Fusion des données terminée")
         return df_merged
     
-    def _enrich_with_bloomberg_data(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Enrichit les données avec les informations Bloomberg"""
-        logger.info("Début de l'enrichissement Bloomberg")
-        
-        # Préparation des tickers equity
-        mask_convertible = df['Security Type'] == 'Convertible Bonds'
-        df.loc[mask_convertible, 'Eqty Ticker'] = df.loc[mask_convertible, 'Eqty Ticker'].astype(str) + ' Equity'
-        
-        # Récupération des tickers uniques non vides
-        tickers_to_fetch = df[df['Eqty Ticker'].notna() & (df['Eqty Ticker'] != 'nan Equity')]['Eqty Ticker'].unique()
-        
-        if len(tickers_to_fetch) > 0:
-            # Appel batch à Bloomberg
-            bloomberg_data = self.bloomberg_fetcher.fetch_batch_data(
-                list(tickers_to_fetch),
-                ['EXPECTED_REPORT_DT', 'EXPECTED_REPORT_TIME']
-            )
-            
-            # Application des résultats
-            df['EXPECTED_REPORT_DT'] = df['Eqty Ticker'].map(
-                lambda x: bloomberg_data.get(x, {}).get('EXPECTED_REPORT_DT') if x in bloomberg_data else None
-            )
-            df['EXPECTED_REPORT_TIME'] = df['Eqty Ticker'].map(
-                lambda x: bloomberg_data.get(x, {}).get('EXPECTED_REPORT_TIME') if x in bloomberg_data else None
-            )
-        
-        # Création de la colonne EARNING
-        df["EARNING"] = df.apply(self._create_earning_column, axis=1)
-        
-        logger.info("Enrichissement Bloomberg terminé")
-        return df
+ 
     
     def _create_earning_column(self, row) -> str:
         """Crée la colonne EARNING combinant date et heure"""
@@ -172,8 +138,3 @@ class DataLoader:
             return f"{row['EXPECTED_REPORT_DT']} {row['EXPECTED_REPORT_TIME']}"
         else:
             return f"{row['EXPECTED_REPORT_DT']}"
-    
-    def close_bloomberg_connection(self):
-        """Ferme la connexion Bloomberg"""
-        self.bloomberg_fetcher.close_session()
-
